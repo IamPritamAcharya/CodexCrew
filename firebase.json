@@ -1,1 +1,16 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"codexcrew-igit","appId":"1:919336068982:android:5ad4b15e581306202e7c57","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"codexcrew-igit","configurations":{"android":"1:919336068982:android:5ad4b15e581306202e7c57","web":"1:919336068982:web:d71e41d6e3a43a252e7c57"}}}}}}
+{
+    "hosting": {
+        "public": "build/web",
+        "ignore": [
+            "firebase.json",
+            "**/.*",
+            "**/node_modules/**"
+        ],
+        "rewrites": [
+            {
+                "source": "**",
+                "destination": "/index.html"
+            }
+        ]
+    }
+}
