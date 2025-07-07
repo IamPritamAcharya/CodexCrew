@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "919336068982",
+    "project_id": "codexcrew-igit",
+    "storage_bucket": "codexcrew-igit.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:919336068982:android:5ad4b15e581306202e7c57",
+        "android_client_info": {
+          "package_name": "com.example.codexcrew"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEE7xfgde9qCpatgMcIHpqkChCWtomwtM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
