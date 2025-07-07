@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:codexcrew/screens/leaderboards/students_model.dart';
@@ -119,52 +120,49 @@ class _AdminPageState extends State<AdminPage> {
 
   @override
   Widget build(BuildContext context) {
+    const double radius = 30;
+
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: Text('Admin Panel', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.black,
-        iconTheme: IconThemeData(color: Colors.white),
-      ),
+      backgroundColor: Colors.transparent,
+
       body: Center(
         child: Container(
           width: double.infinity,
-          constraints: BoxConstraints(maxWidth: 1200),
+          constraints: BoxConstraints(maxWidth: 600),
           child: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(16),
               child: Column(
                 children: [
-                
+                  SizedBox(height: 110),
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[900],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+
                     child: TextField(
                       controller: _searchController,
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        hintText:
-                            'Search students by name or registration number...',
+                        hintText: 'Name or Redg no',
                         hintStyle: TextStyle(color: Colors.grey),
-                        prefixIcon: Icon(Icons.search, color: Colors.grey),
+                        prefixIcon: Icon(
+                          CupertinoIcons.search,
+                          color: Colors.grey,
+                        ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(radius),
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(radius),
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(radius),
                           borderSide: BorderSide(color: Colors.white),
                         ),
                         filled: true,
-                        fillColor: Colors.grey[800],
+                        fillColor: Colors.black.withAlpha(90),
                       ),
                       onChanged: (value) {
                         setState(() {
@@ -174,25 +172,28 @@ class _AdminPageState extends State<AdminPage> {
                     ),
                   ),
                   SizedBox(height: 20),
-           
+
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.grey[900],
-                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.black.withAlpha(80),
+                      borderRadius: BorderRadius.circular(radius),
+                      border: Border.all(color: Colors.white30),
                     ),
                     child: Form(
                       key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            _isEditing ? 'Edit Student' : 'Add New Student',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                          Center(
+                            child: Text(
+                              _isEditing ? 'Edit Student' : 'Add New Student',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           SizedBox(height: 20),
@@ -254,26 +255,31 @@ class _AdminPageState extends State<AdminPage> {
                     ),
                   ),
                   SizedBox(height: 20),
-       
+
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.grey[900],
-                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.black.withAlpha(80),
+                      borderRadius: BorderRadius.circular(radius),
+                      border: Border.all(color: Colors.white30),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Students List (Tap to Edit)',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                        Center(
+                          child: Text(
+                            'Students List\n(Tap to Edit)',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
+
                         SizedBox(height: 20),
+                        Divider(),
                         StreamBuilder<QuerySnapshot>(
                           stream:
                               FirebaseFirestore.instance
@@ -328,7 +334,8 @@ class _AdminPageState extends State<AdminPage> {
                                     student.contestScore;
 
                                 return Card(
-                                  color: Colors.grey[800],
+                                  color: Colors.grey.withAlpha(70),
+
                                   margin: EdgeInsets.only(bottom: 8),
                                   child: ListTile(
                                     onTap: () => _fillForm(student, docId),
@@ -337,17 +344,20 @@ class _AdminPageState extends State<AdminPage> {
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
+                                        fontSize: 20,
                                       ),
                                     ),
+
                                     subtitle: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
+                                        Divider(),
                                         SizedBox(height: 4),
                                         Text(
                                           '${student.registrationNumber}',
                                           style: TextStyle(
-                                            color: Colors.grey[400],
+                                            color: Colors.deepPurple[400],
                                           ),
                                         ),
                                         Text(
@@ -358,15 +368,16 @@ class _AdminPageState extends State<AdminPage> {
                                         ),
                                         SizedBox(height: 4),
                                         Text(
-                                          'Session: ${student.sessionScore} | Dev: ${student.developmentScore} | Contest: ${student.contestScore}',
+                                          'Session: ${student.sessionScore} \nDev: ${student.developmentScore} \nContest: ${student.contestScore}',
                                           style: TextStyle(
-                                            color: Colors.white70,
+                                            color: Colors.yellow,
                                           ),
                                         ),
+                                        Divider(),
                                         Text(
                                           'Total: $totalScore',
                                           style: TextStyle(
-                                            color: Colors.white,
+                                            color: Colors.green,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -374,7 +385,7 @@ class _AdminPageState extends State<AdminPage> {
                                     ),
                                     trailing: IconButton(
                                       icon: Icon(
-                                        Icons.delete,
+                                        CupertinoIcons.delete,
                                         color: Colors.red,
                                       ),
                                       onPressed:
@@ -413,16 +424,18 @@ class _AdminPageState extends State<AdminPage> {
         keyboardType: isNumber ? TextInputType.number : TextInputType.text,
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
-          labelText: label,
+          labelText: "  $label",
           labelStyle: TextStyle(color: Colors.grey),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
+            borderRadius: BorderRadius.all(Radius.circular(30)),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.all(Radius.circular(30)),
           ),
           filled: true,
-          fillColor: Colors.grey[800],
+          fillColor: Colors.grey.shade900,
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {

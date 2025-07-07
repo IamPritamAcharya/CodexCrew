@@ -1,7 +1,7 @@
-
 import 'dart:ui';
 
 import 'package:codexcrew/core/nav_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class FloatingNavBarWrapper extends StatelessWidget {
@@ -46,41 +46,50 @@ class FloatingNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 30, left: 20, right: 20),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.85),
-              borderRadius: BorderRadius.circular(60),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.15),
-                width: 1.5,
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1000),
+        child: Container(
+          margin: const EdgeInsets.only(top: 15),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(60),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(60),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.15),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.4),
+                      blurRadius: 30,
+                      offset: const Offset(0, 15),
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 5,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildLogo(),
+                    _buildNavigationItems(),
+                    _buildCTAButton(),
+                  ],
+                ),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.4),
-                  blurRadius: 30,
-                  offset: const Offset(0, 15),
-                ),
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 5,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildLogo(),
-                _buildNavigationItems(),
-                _buildCTAButton(),
-              ],
             ),
           ),
         ),
@@ -218,75 +227,79 @@ class MobileFloatingNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     const double radius = 20;
 
-    return Container(
-      margin: const EdgeInsets.only(top: 40, left: 16, right: 16),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(radius),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(
-                0.4,
-              ), 
-              borderRadius: BorderRadius.circular(radius),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.15),
-                width: 1.5,
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.only(
+          top: kIsWeb ? 20 : 0,
+          left: 16,
+          right: 16,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(radius),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(radius),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.15),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.4),
+                    blurRadius: 25,
+                    offset: const Offset(0, 12),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.4),
-                  blurRadius: 25,
-                  offset: const Offset(0, 12),
-                ),
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 5,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () => onNavigate('Home'),
-                  child: ShaderMask(
-                    shaderCallback:
-                        (bounds) => const LinearGradient(
-                          colors: [Colors.white, Color(0xFF6366F1)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ).createShader(bounds),
-                    child: const Text(
-                      'CODEX',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                        letterSpacing: -0.5,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () => onNavigate('Home'),
+                    child: ShaderMask(
+                      shaderCallback:
+                          (bounds) => const LinearGradient(
+                            colors: [Colors.white, Color(0xFF6366F1)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ).createShader(bounds),
+                      child: const Text(
+                        'CODEX',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                          letterSpacing: -0.5,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () => _showMobileMenu(context),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(
-                      Icons.menu,
-                      color: Colors.white,
-                      size: 22,
+                  GestureDetector(
+                    onTap: () => _showMobileMenu(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.menu,
+                        color: Colors.white,
+                        size: 22,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

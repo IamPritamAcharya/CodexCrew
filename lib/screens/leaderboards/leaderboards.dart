@@ -16,7 +16,7 @@ class LeaderboardPage extends StatelessWidget {
 
     final isWeb = screenWidth > 600;
     return Scaffold(
-      backgroundColor: Color(0xFF0F0F0F),
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -62,7 +62,6 @@ class LeaderboardPage extends StatelessWidget {
 
                   students.sort((a, b) => b.totalScore.compareTo(a.totalScore));
 
-               
                   List<StudentWithRank> studentsWithRank = [];
                   int currentRank = 1;
 
@@ -134,7 +133,7 @@ class LeaderboardPage extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(isWide ? 20 : 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF2A2A2A),
+        color: const Color.fromARGB(255, 10, 10, 10),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),
@@ -145,13 +144,13 @@ class LeaderboardPage extends StatelessWidget {
           SizedBox(width: 40, child: _headerText('#')),
           Expanded(flex: 3, child: _headerText('Student')),
           if (isWide) ...[
-            SizedBox(width: 12), 
+            SizedBox(width: 12),
             SizedBox(width: 100, child: _headerText('Session')),
             SizedBox(width: 12),
             SizedBox(width: 100, child: _headerText('Development')),
-            SizedBox(width: 12), 
+            SizedBox(width: 12),
             SizedBox(width: 100, child: _headerText('Contest')),
-            SizedBox(width: 12), 
+            SizedBox(width: 12),
           ],
           SizedBox(width: 100, child: _headerText('Total')),
         ],
@@ -179,10 +178,10 @@ class LeaderboardPage extends StatelessWidget {
       height: isWide ? 68 : null,
       padding: EdgeInsets.symmetric(
         horizontal: isWide ? 20 : 16,
-        vertical: isWide ? 14 : 12, 
+        vertical: isWide ? 14 : 12,
       ),
       decoration: BoxDecoration(
-        color: isTopThree ? Colors.deepPurple.withOpacity(0.05) : null,
+        color: isTopThree ? Colors.blueAccent.withAlpha(10) : null,
         border: Border(
           bottom: BorderSide(color: Colors.grey.shade800, width: 0.5),
         ),
@@ -191,16 +190,19 @@ class LeaderboardPage extends StatelessWidget {
         children: [
           SizedBox(
             width: 40,
-            child: Text(
-              rank.toString(),
-              style: TextStyle(
-                color: isTopThree ? Colors.deepPurple : Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+            child: Center(
+              child: Text(
+                rank.toString(),
+                style: TextStyle(
+                  color: isTopThree ? Colors.green : Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
           ),
+
           Expanded(
             flex: 3,
             child: Column(
@@ -268,7 +270,7 @@ class LeaderboardPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 12), 
+            SizedBox(width: 12),
             SizedBox(
               width: 100,
               child: Center(
@@ -292,7 +294,7 @@ class LeaderboardPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 12), 
+            SizedBox(width: 12),
           ],
           SizedBox(
             width: 100,
@@ -300,17 +302,21 @@ class LeaderboardPage extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: isWide ? 12 : 8,
-                  vertical: isWide ? 6 : 4, 
+                  vertical: isWide ? 6 : 4,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.deepPurple.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(8),
+                  border:
+                      isWide
+                          ? Border.all(color: Colors.deepPurple, width: 1)
+                          : null,
                 ),
                 child: Text(
                   student.totalScore.toString(),
                   style: TextStyle(
                     color: Colors.deepPurple,
-                    fontSize: isWide ? 16 : 14,
+                    fontSize: isWide ? 14 : 12,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,

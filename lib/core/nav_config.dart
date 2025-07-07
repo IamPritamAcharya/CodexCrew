@@ -1,5 +1,6 @@
 import 'package:codexcrew/screens/about/temp.dart';
 import 'package:codexcrew/screens/admin/admin_page.dart';
+import 'package:codexcrew/screens/hallOfFame/hall_of_fame.dart';
 import 'package:codexcrew/screens/home/home_screen.dart';
 import 'package:codexcrew/screens/leaderboards/leaderboards.dart';
 import 'package:flutter/material.dart';
@@ -39,9 +40,9 @@ class NavConfig {
       icon: Icons.code,
     ),
     NavItem(
-      name: 'Team',
-      route: '/team',
-      page: TeamPageContent(),
+      name: 'Alumni',
+      route: '/alumni',
+      page: HallOfFamePage(),
       icon: Icons.group,
     ),
     NavItem(

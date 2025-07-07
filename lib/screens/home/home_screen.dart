@@ -1,4 +1,4 @@
-import 'package:codexcrew/screens/home/widgets/temp.dart';
+import 'package:codexcrew/temp.dart';
 import 'package:codexcrew/screens/home/widgets/workshops.dart';
 import 'package:flutter/material.dart';
 import 'widgets/hero_section.dart';
