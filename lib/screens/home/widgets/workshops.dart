@@ -11,7 +11,8 @@ class WorkshopPage extends StatefulWidget {
 class _WorkshopPageState extends State<WorkshopPage> {
   final PageController _pageController = PageController();
   int _currentIndex = 0;
-  List<DocumentSnapshot>? _cachedWorkshops; 
+  List<DocumentSnapshot>? _cachedWorkshops;
+  bool _isInitialized = false;
 
   @override
   void dispose() {
@@ -27,14 +28,7 @@ class _WorkshopPageState extends State<WorkshopPage> {
 
         return Container(
           width: double.infinity,
-
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFF0F0F0F), Color(0xFF1A1A1A), Color(0xFF0A0A0A)],
-            ),
-          ),
+          decoration: BoxDecoration(color: Colors.transparent),
           child: Column(
             children: [
               _buildHeader(isDesktop),
@@ -105,7 +99,6 @@ class _WorkshopPageState extends State<WorkshopPage> {
               .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-       
           if (_cachedWorkshops != null) {
             return _buildWorkshopPageView(_cachedWorkshops!, isDesktop);
           }
@@ -120,107 +113,58 @@ class _WorkshopPageState extends State<WorkshopPage> {
 
         final workshops = snapshot.data!.docs;
 
-        if (_cachedWorkshops == null ||
-            _cachedWorkshops!.length != workshops.length) {
+        if (!_isInitialized) {
           _cachedWorkshops = workshops;
+          _isInitialized = true;
+          _currentIndex = 0;
+        } else if (_cachedWorkshops != null) {
        
-          if (_currentIndex >= workshops.length) {
-            _currentIndex = workshops.length - 1;
- 
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (_pageController.hasClients) {
-                _pageController.animateToPage(
-                  _currentIndex,
-                  duration: Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                );
+          bool workshopsChanged = false;
+          if (_cachedWorkshops!.length != workshops.length) {
+            workshopsChanged = true;
+          } else {
+           
+            for (int i = 0; i < workshops.length; i++) {
+              if (_cachedWorkshops![i].id != workshops[i].id) {
+                workshopsChanged = true;
+                break;
               }
-            });
+            }
+          }
+
+          if (workshopsChanged) {
+            _cachedWorkshops = workshops;
+         
+            if (_currentIndex >= workshops.length) {
+              _currentIndex = workshops.length - 1;
+        
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (_pageController.hasClients) {
+                  _pageController.animateToPage(
+                    _currentIndex,
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                }
+              });
+            }
           }
         }
 
-        return _buildWorkshopPageView(workshops, isDesktop);
-      },
-    );
-  }
-
-  Widget _buildWorkshopPageView(
-    List<DocumentSnapshot> workshops,
-    bool isDesktop,
-  ) {
-    return Container(
-      height: isDesktop ? 800 : 500,
-      constraints: BoxConstraints(maxWidth: 1200),
-      child: Stack(
-        children: [
-          PageView.builder(
-            controller: _pageController,
-            onPageChanged: (index) => setState(() => _currentIndex = index),
-            itemCount: workshops.length,
-            physics: BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              final data = workshops[index].data() as Map<String, dynamic>;
-              return Container(
-                margin: EdgeInsets.symmetric(horizontal: isDesktop ? 40 : 20),
-                child: WorkshopCard(
-                  title: data['title'] ?? 'No Title',
-                  date: data['date'] ?? 'No Date',
-                  description: data['description'] ?? 'No Description',
-                  images: List<String>.from(data['images'] ?? []),
-                  isDesktop: isDesktop,
-                  onTap: () => _showWorkshopModal(context, data, isDesktop),
-                ),
-              );
-            },
-          ),
-          if (isDesktop && workshops.length > 1) ...[
-            Positioned(
-              left: 20,
-              top: 0,
-              bottom: 0,
-              child: Center(
-                child: _buildArrowButton(
-                  Icons.arrow_back_ios,
-                  _currentIndex > 0
-                      ? () {
-                        _pageController.previousPage(
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      }
-                      : null,
-                ),
-              ),
-            ),
-            Positioned(
-              right: 60,
-              top: 0,
-              bottom: 0,
-              child: Center(
-                child: _buildArrowButton(
-                  Icons.arrow_forward_ios,
-                  _currentIndex < workshops.length - 1
-                      ? () {
-                        _pageController.nextPage(
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      }
-                      : null,
-                ),
-              ),
-            ),
-          ],
-          Positioned(
-            bottom: 20,
-            left: 0,
-            right: 0,
-            child: Row(
+        return Column(
+          children: [
+            _buildWorkshopPageView(workshops, isDesktop),
+            SizedBox(height: 20),
+       
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 workshops.length,
                 (index) => GestureDetector(
                   onTap: () {
+                    setState(() {
+                      _currentIndex = index;
+                    });
                     _pageController.animateToPage(
                       index,
                       duration: Duration(milliseconds: 300),
@@ -242,7 +186,97 @@ class _WorkshopPageState extends State<WorkshopPage> {
                 ),
               ),
             ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildWorkshopPageView(
+    List<DocumentSnapshot> workshops,
+    bool isDesktop,
+  ) {
+    return Container(
+      height: isDesktop ? 800 : 500,
+      child: Stack(
+        children: [
+  
+          Center(
+            child: Container(
+              constraints: BoxConstraints(maxWidth: 1200),
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                itemCount: workshops.length,
+                physics: BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  final data = workshops[index].data() as Map<String, dynamic>;
+                  return Container(
+                    margin: EdgeInsets.symmetric(
+                      horizontal: isDesktop ? 40 : 20,
+                    ),
+                    child: WorkshopCard(
+                      title: data['title'] ?? 'No Title',
+                      date: data['date'] ?? 'No Date',
+                      description: data['description'] ?? 'No Description',
+                      images: List<String>.from(data['images'] ?? []),
+                      isDesktop: isDesktop,
+                      onTap: () => _showWorkshopModal(context, data, isDesktop),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
+        
+          if (isDesktop && workshops.length > 1) ...[
+            Positioned(
+              left: 100,
+              top: 0,
+              bottom: 0,
+              child: Center(
+                child: _buildArrowButton(
+                  Icons.arrow_back_ios,
+                  _currentIndex > 0
+                      ? () {
+                        setState(() {
+                          _currentIndex--;
+                        });
+                        _pageController.previousPage(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                      : null,
+                ),
+              ),
+            ),
+            Positioned(
+              right: 100,
+              top: 0,
+              bottom: 0,
+              child: Center(
+                child: _buildArrowButton(
+                  Icons.arrow_forward_ios,
+                  _currentIndex < workshops.length - 1
+                      ? () {
+                        setState(() {
+                          _currentIndex++;
+                        });
+                        _pageController.nextPage(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                      : null,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
