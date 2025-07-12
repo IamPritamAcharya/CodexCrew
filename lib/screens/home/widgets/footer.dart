@@ -31,17 +31,17 @@ class SimpleFooter extends StatelessWidget {
   static const Map<String, Map<String, String>> socialMedia = {
     'instagram': {
       'name': 'Instagram',
-      'url': 'https://www.instagram.com/yourapp',
+      'url': 'https://www.instagram.com/codexcrew.igit/',
       'icon': 'https://cdn-icons-png.flaticon.com/512/2111/2111463.png',
     },
     'linkedin': {
       'name': 'LinkedIn',
-      'url': 'https://www.linkedin.com/company/yourapp',
+      'url': 'https://www.linkedin.com/company/codexcrew/',
       'icon': 'https://cdn-icons-png.flaticon.com/512/174/174857.png',
     },
     'twitter': {
       'name': 'Twitter',
-      'url': 'https://www.twitter.com/yourapp',
+      'url': 'https://www.twitter.com/idk',
       'icon': 'https://cdn-icons-png.flaticon.com/512/733/733579.png',
     },
   };
