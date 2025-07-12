@@ -54,7 +54,7 @@ class FloatingNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 1000),
+        constraints: const BoxConstraints(maxWidth: 1100),
         child: Container(
           margin: const EdgeInsets.only(top: 15),
           child: ClipRRect(
@@ -277,9 +277,7 @@ class FloatingNavBar extends StatelessWidget {
                       GestureDetector(
                         onTap: () async {
                           Navigator.of(context).pop();
-                          await AuthService().signInWithGoogle(
-                            context,
-                          ); 
+                          await AuthService().signInWithGoogle(context);
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -514,7 +512,7 @@ class MobileFloatingNavBar extends StatelessWidget {
     final visibleItems =
         NavConfig.items.where((item) {
           if (item.name == 'Admin') return authService.isAdmin;
-      
+
           return true;
         }).toList();
 
@@ -620,9 +618,7 @@ class MobileFloatingNavBar extends StatelessWidget {
                       GestureDetector(
                         onTap: () async {
                           Navigator.of(context).pop();
-                          await AuthService().signInWithGoogle(
-                            context,
-                          ); 
+                          await AuthService().signInWithGoogle(context);
                         },
                         child: Container(
                           width: double.infinity,
@@ -692,7 +688,7 @@ class MobileFloatingNavBar extends StatelessWidget {
           if (authService.isSignedIn) {
             await authService.signOut();
           } else {
-            await authService.signInWithGoogle(context); 
+            await authService.signInWithGoogle(context);
           }
         },
         child: Container(
