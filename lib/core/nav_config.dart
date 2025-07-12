@@ -3,6 +3,7 @@ import 'package:codexcrew/screens/gallery/bento_grid.dart';
 import 'package:codexcrew/screens/hallOfFame/hall_of_fame.dart';
 import 'package:codexcrew/screens/home/home_screen.dart';
 import 'package:codexcrew/screens/leaderboards/leaderboards.dart';
+import 'package:codexcrew/screens/resources/resource_page.dart';
 import 'package:flutter/material.dart';
 
 class NavItem {
@@ -51,7 +52,12 @@ class NavConfig {
       page: BentoGrid(),
       icon: Icons.contact_mail,
     ),
-
+    NavItem(
+      name: 'Resources',
+      route: '/resources',
+      page: ResourcesPage(),
+      icon: Icons.book,
+    ),
   ];
 
   static NavItem getByRoute(String route) {
