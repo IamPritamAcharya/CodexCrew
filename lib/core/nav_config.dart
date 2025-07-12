@@ -1,5 +1,5 @@
-import 'package:codexcrew/screens/about/temp.dart';
 import 'package:codexcrew/screens/admin/admin_page.dart';
+import 'package:codexcrew/screens/gallery/bento_grid.dart';
 import 'package:codexcrew/screens/hallOfFame/hall_of_fame.dart';
 import 'package:codexcrew/screens/home/home_screen.dart';
 import 'package:codexcrew/screens/leaderboards/leaderboards.dart';
@@ -46,11 +46,12 @@ class NavConfig {
       icon: Icons.group,
     ),
     NavItem(
-      name: 'Contact',
-      route: '/contact',
-      page: ContactPageContent(),
+      name: 'Gallery',
+      route: '/gallery',
+      page: BentoGrid(),
       icon: Icons.contact_mail,
     ),
+
   ];
 
   static NavItem getByRoute(String route) {

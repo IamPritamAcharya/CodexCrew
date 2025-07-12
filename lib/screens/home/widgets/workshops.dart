@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class WorkshopPage extends StatefulWidget {
   const WorkshopPage({super.key});
@@ -11,13 +13,90 @@ class WorkshopPage extends StatefulWidget {
 class _WorkshopPageState extends State<WorkshopPage> {
   final PageController _pageController = PageController();
   int _currentIndex = 0;
-  List<DocumentSnapshot>? _cachedWorkshops;
-  bool _isInitialized = false;
+  List<Map<String, dynamic>> _workshops = [];
+  bool _isLoading = true;
+  bool _hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWorkshops();
+  }
 
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadWorkshops() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _hasError = false;
+      });
+
+      final prefs = await SharedPreferences.getInstance();
+      final String? cachedData = prefs.getString('workshops_data');
+      final int lastFetchTime = prefs.getInt('workshops_last_fetch') ?? 0;
+
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final cacheAge = now - lastFetchTime;
+      final oneDayInMs = 24 * 60 * 60 * 1000;
+
+      if (cachedData != null && cacheAge < oneDayInMs) {
+        final List<dynamic> cachedWorkshops = json.decode(cachedData);
+        setState(() {
+          _workshops = cachedWorkshops.cast<Map<String, dynamic>>();
+          _isLoading = false;
+        });
+      } else {
+        await _fetchFromFirestore();
+      }
+    } catch (e) {
+      setState(() {
+        _hasError = true;
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _fetchFromFirestore() async {
+    try {
+      final QuerySnapshot snapshot =
+          await FirebaseFirestore.instance
+              .collection('workshops')
+              .orderBy('date', descending: true)
+              .get();
+
+      final List<Map<String, dynamic>> workshops =
+          snapshot.docs.map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            data['id'] = doc.id; 
+            return data;
+          }).toList();
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('workshops_data', json.encode(workshops));
+      await prefs.setInt(
+        'workshops_last_fetch',
+        DateTime.now().millisecondsSinceEpoch,
+      );
+
+      setState(() {
+        _workshops = workshops;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _hasError = true;
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _refreshWorkshops() async {
+    await _fetchFromFirestore();
   }
 
   @override
@@ -91,116 +170,74 @@ class _WorkshopPageState extends State<WorkshopPage> {
   }
 
   Widget _buildWorkshopsSection(bool isDesktop) {
-    return StreamBuilder<QuerySnapshot>(
-      stream:
-          FirebaseFirestore.instance
-              .collection('workshops')
-              .orderBy('date', descending: true)
-              .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          if (_cachedWorkshops != null) {
-            return _buildWorkshopPageView(_cachedWorkshops!, isDesktop);
-          }
-          return _buildLoadingState();
-        }
-        if (snapshot.hasError) {
-          return _buildErrorState();
-        }
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return _buildEmptyState(isDesktop);
-        }
+    if (_isLoading) {
+      return _buildLoadingState();
+    }
 
-        final workshops = snapshot.data!.docs;
+    if (_hasError) {
+      return _buildErrorState();
+    }
 
-        if (!_isInitialized) {
-          _cachedWorkshops = workshops;
-          _isInitialized = true;
-          _currentIndex = 0;
-        } else if (_cachedWorkshops != null) {
-       
-          bool workshopsChanged = false;
-          if (_cachedWorkshops!.length != workshops.length) {
-            workshopsChanged = true;
-          } else {
-           
-            for (int i = 0; i < workshops.length; i++) {
-              if (_cachedWorkshops![i].id != workshops[i].id) {
-                workshopsChanged = true;
-                break;
-              }
-            }
-          }
+    if (_workshops.isEmpty) {
+      return _buildEmptyState(isDesktop);
+    }
 
-          if (workshopsChanged) {
-            _cachedWorkshops = workshops;
-         
-            if (_currentIndex >= workshops.length) {
-              _currentIndex = workshops.length - 1;
-        
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (_pageController.hasClients) {
-                  _pageController.animateToPage(
-                    _currentIndex,
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
-                }
-              });
-            }
-          }
-        }
-
-        return Column(
-          children: [
-            _buildWorkshopPageView(workshops, isDesktop),
-            SizedBox(height: 20),
-       
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                workshops.length,
-                (index) => GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                    _pageController.animateToPage(
-                      index,
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
-                  },
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 4),
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color:
-                          _currentIndex == index
-                              ? Color(0xFF6366F1)
-                              : Colors.white.withOpacity(0.3),
-                    ),
-                  ),
+    return Column(
+      children: [
+        _buildWorkshopPageView(_workshops, isDesktop),
+        SizedBox(height: 20),
+   
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            _workshops.length,
+            (index) => GestureDetector(
+              onTap: () {
+                setState(() {
+                  _currentIndex = index;
+                });
+                _pageController.animateToPage(
+                  index,
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 4),
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color:
+                      _currentIndex == index
+                          ? Color(0xFF6366F1)
+                          : Colors.white.withOpacity(0.3),
                 ),
               ),
             ),
-          ],
-        );
-      },
+          ),
+        ),
+        SizedBox(height: 20),
+      ],
     );
   }
 
   Widget _buildWorkshopPageView(
-    List<DocumentSnapshot> workshops,
+    List<Map<String, dynamic>> workshops,
     bool isDesktop,
   ) {
+    if (_currentIndex >= workshops.length) {
+      _currentIndex = workshops.length - 1;
+    }
+    if (_currentIndex < 0) {
+      _currentIndex = 0;
+    }
+
     return Container(
       height: isDesktop ? 800 : 500,
       child: Stack(
         children: [
-  
+
           Center(
             child: Container(
               constraints: BoxConstraints(maxWidth: 1200),
@@ -214,7 +251,7 @@ class _WorkshopPageState extends State<WorkshopPage> {
                 itemCount: workshops.length,
                 physics: BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
-                  final data = workshops[index].data() as Map<String, dynamic>;
+                  final data = workshops[index];
                   return Container(
                     margin: EdgeInsets.symmetric(
                       horizontal: isDesktop ? 40 : 20,
@@ -232,7 +269,7 @@ class _WorkshopPageState extends State<WorkshopPage> {
               ),
             ),
           ),
-        
+   
           if (isDesktop && workshops.length > 1) ...[
             Positioned(
               left: 100,
@@ -243,10 +280,12 @@ class _WorkshopPageState extends State<WorkshopPage> {
                   Icons.arrow_back_ios,
                   _currentIndex > 0
                       ? () {
+                        final newIndex = _currentIndex - 1;
                         setState(() {
-                          _currentIndex--;
+                          _currentIndex = newIndex;
                         });
-                        _pageController.previousPage(
+                        _pageController.animateToPage(
+                          newIndex,
                           duration: Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
                         );
@@ -264,10 +303,12 @@ class _WorkshopPageState extends State<WorkshopPage> {
                   Icons.arrow_forward_ios,
                   _currentIndex < workshops.length - 1
                       ? () {
+                        final newIndex = _currentIndex + 1;
                         setState(() {
-                          _currentIndex++;
+                          _currentIndex = newIndex;
                         });
-                        _pageController.nextPage(
+                        _pageController.animateToPage(
+                          newIndex,
                           duration: Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
                         );
@@ -327,6 +368,8 @@ class _WorkshopPageState extends State<WorkshopPage> {
               'Error loading workshops',
               style: TextStyle(color: Colors.white, fontSize: 18),
             ),
+            SizedBox(height: 16),
+            ElevatedButton(onPressed: _refreshWorkshops, child: Text('Retry')),
           ],
         ),
       ),
@@ -353,6 +396,11 @@ class _WorkshopPageState extends State<WorkshopPage> {
                 fontSize: isDesktop ? 24 : 20,
                 fontWeight: FontWeight.w600,
               ),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _refreshWorkshops,
+              child: Text('Refresh'),
             ),
           ],
         ),

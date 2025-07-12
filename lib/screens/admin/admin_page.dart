@@ -1,3 +1,4 @@
+import 'package:codexcrew/screens/admin/admin_image_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -135,6 +136,34 @@ class _AdminPageState extends State<AdminPage> {
               child: Column(
                 children: [
                   SizedBox(height: 110),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AdminImagePage(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[900],
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 6,
+                      shadowColor: Colors.black.withOpacity(0.5),
+                    ),
+                    child: const Text(
+                      'Admin Gallery',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.all(16),

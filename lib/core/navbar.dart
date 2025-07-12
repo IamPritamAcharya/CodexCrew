@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:codexcrew/core/nav_config.dart';
+import 'package:codexcrew/screens/auth/auth_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -16,19 +17,24 @@ class FloatingNavBarWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth > 768) {
-          return FloatingNavBar(
-            currentPage: currentPage,
-            onNavigate: onNavigate,
-          );
-        } else {
-          return MobileFloatingNavBar(
-            currentPage: currentPage,
-            onNavigate: onNavigate,
-          );
-        }
+    return StreamBuilder(
+      stream: AuthService().authStateChanges,
+      builder: (context, snapshot) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth > 768) {
+              return FloatingNavBar(
+                currentPage: currentPage,
+                onNavigate: onNavigate,
+              );
+            } else {
+              return MobileFloatingNavBar(
+                currentPage: currentPage,
+                onNavigate: onNavigate,
+              );
+            }
+          },
+        );
       },
     );
   }
@@ -85,8 +91,8 @@ class FloatingNavBar extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildLogo(),
-                    _buildNavigationItems(),
-                    _buildCTAButton(),
+                    _buildNavigationItems(context),
+                    _buildAuthButton(context),
                   ],
                 ),
               ),
@@ -123,15 +129,23 @@ class FloatingNavBar extends StatelessWidget {
     );
   }
 
-  Widget _buildNavigationItems() {
+  Widget _buildNavigationItems(BuildContext context) {
+    final authService = AuthService();
+    final visibleItems =
+        NavConfig.items.where((item) {
+          if (item.name == 'Admin') return authService.isAdmin;
+
+          return true;
+        }).toList();
+
     return Row(
       children:
-          NavConfig.items.map((item) {
+          visibleItems.map((item) {
             final isActive = currentPage == item.name;
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: GestureDetector(
-                onTap: () => onNavigate(item.name),
+                onTap: () => _handleNavigation(context, item.name, authService),
                 child: MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: AnimatedContainer(
@@ -175,9 +189,142 @@ class FloatingNavBar extends StatelessWidget {
     );
   }
 
-  Widget _buildCTAButton() {
+  void _handleNavigation(
+    BuildContext context,
+    String itemName,
+    AuthService authService,
+  ) {
+    if (itemName == 'Leaderboards' && !authService.isSignedIn) {
+      _showSignInDialog(context);
+    } else {
+      onNavigate(itemName);
+    }
+  }
+
+  void _showSignInDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Dialog(
+            backgroundColor: Colors.transparent,
+            child: Container(
+              constraints: BoxConstraints(maxWidth: 500),
+              padding: const EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.2),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.leaderboard_outlined,
+                    color: Colors.white,
+                    size: 48,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Please sign in to view leaderboards',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.2),
+                              width: 1,
+                            ),
+                          ),
+                          child: const Text(
+                            'Cancel',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          Navigator.of(context).pop();
+                          await AuthService().signInWithGoogle(
+                            context,
+                          ); 
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: const Text(
+                            'Sign In',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildAuthButton(BuildContext context) {
+    final authService = AuthService();
     return GestureDetector(
-      onTap: () => onNavigate('Contact'),
+      onTap: () async {
+        if (authService.isSignedIn) {
+          await authService.signOut();
+        } else {
+          await authService.signInWithGoogle(context);
+        }
+      },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: AnimatedContainer(
@@ -198,9 +345,9 @@ class FloatingNavBar extends StatelessWidget {
               ),
             ],
           ),
-          child: const Text(
-            'Contact Us',
-            style: TextStyle(
+          child: Text(
+            authService.isSignedIn ? 'Logout' : 'Sign In',
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 15,
               fontWeight: FontWeight.w600,
@@ -347,105 +494,9 @@ class MobileFloatingNavBar extends StatelessWidget {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          ...NavConfig.items.map((item) {
-                            final isActive = currentPage == item.name;
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 4,
-                                horizontal: 24,
-                              ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  onNavigate(item.name);
-                                },
-                                child: Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 18,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color:
-                                        isActive
-                                            ? Colors.white.withOpacity(0.1)
-                                            : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(15),
-                                    border:
-                                        isActive
-                                            ? Border.all(
-                                              color: Colors.white.withOpacity(
-                                                0.2,
-                                              ),
-                                              width: 1,
-                                            )
-                                            : null,
-                                  ),
-                                  child: Text(
-                                    item.name,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color:
-                                          isActive
-                                              ? Colors.white
-                                              : Colors.white.withOpacity(0.8),
-                                      fontSize: 18,
-                                      fontWeight:
-                                          isActive
-                                              ? FontWeight.w600
-                                              : FontWeight.w500,
-                                      letterSpacing: 0.3,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                          ..._buildMobileNavItems(context),
                           const SizedBox(height: 24),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 24),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
-                                onNavigate('Contact');
-                              },
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  gradient: const LinearGradient(
-                                    colors: [
-                                      Color(0xFF6366F1),
-                                      Color(0xFF8B5CF6),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(
-                                        0xFF6366F1,
-                                      ).withOpacity(0.3),
-                                      blurRadius: 12,
-                                      offset: const Offset(0, 6),
-                                    ),
-                                  ],
-                                ),
-                                child: const Text(
-                                  'Contact Us',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0.3,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          _buildMobileAuthButton(context),
                         ],
                       ),
                     ),
@@ -455,6 +506,225 @@ class MobileFloatingNavBar extends StatelessWidget {
               ),
             ),
           ),
+    );
+  }
+
+  List<Widget> _buildMobileNavItems(BuildContext context) {
+    final authService = AuthService();
+    final visibleItems =
+        NavConfig.items.where((item) {
+          if (item.name == 'Admin') return authService.isAdmin;
+      
+          return true;
+        }).toList();
+
+    return visibleItems.map((item) {
+      final isActive = currentPage == item.name;
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 24),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+            _handleMobileNavigation(context, item.name, authService);
+          },
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 18),
+            decoration: BoxDecoration(
+              color:
+                  isActive ? Colors.white.withOpacity(0.1) : Colors.transparent,
+              borderRadius: BorderRadius.circular(15),
+              border:
+                  isActive
+                      ? Border.all(
+                        color: Colors.white.withOpacity(0.2),
+                        width: 1,
+                      )
+                      : null,
+            ),
+            child: Text(
+              item.name,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: isActive ? Colors.white : Colors.white.withOpacity(0.8),
+                fontSize: 18,
+                fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                letterSpacing: 0.3,
+              ),
+            ),
+          ),
+        ),
+      );
+    }).toList();
+  }
+
+  void _handleMobileNavigation(
+    BuildContext context,
+    String itemName,
+    AuthService authService,
+  ) {
+    if (itemName == 'Leaderboards' && !authService.isSignedIn) {
+      _showMobileSignInDialog(context);
+    } else {
+      onNavigate(itemName);
+    }
+  }
+
+  void _showMobileSignInDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Dialog(
+            backgroundColor: Colors.transparent,
+            child: Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.2),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.leaderboard_outlined,
+                    color: Colors.white,
+                    size: 48,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Please sign in to view leaderboards',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          Navigator.of(context).pop();
+                          await AuthService().signInWithGoogle(
+                            context,
+                          ); 
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: const Text(
+                            'Sign In',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      GestureDetector(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.2),
+                              width: 1,
+                            ),
+                          ),
+                          child: const Text(
+                            'Cancel',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildMobileAuthButton(BuildContext context) {
+    final authService = AuthService();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: GestureDetector(
+        onTap: () async {
+          Navigator.pop(context);
+          if (authService.isSignedIn) {
+            await authService.signOut();
+          } else {
+            await authService.signInWithGoogle(context); 
+          }
+        },
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            gradient: const LinearGradient(
+              colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF6366F1).withOpacity(0.3),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Text(
+            authService.isSignedIn ? 'Logout' : 'Sign In',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.3,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
