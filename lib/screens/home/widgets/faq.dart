@@ -8,14 +8,14 @@ class FAQSection extends StatefulWidget {
 class _FAQSectionState extends State<FAQSection>
     with SingleTickerProviderStateMixin {
   final Map<String, String> faqData = {
-    "How does Memzo's AI Photo Sharing feature help both the photographers and guests in an event?":
-        "Memzo revolutionizes photo sharing for Events, providing a seamless experience for clients and guests alike. Through our innovative mobile app and web platform, powered by advanced AI Face Recognition technology, photographers can instantly and securely share photos. Guests can effortlessly view their photos by simply taking a selfie, setting a new benchmark for efficiency, engagement, and brand exposure.",
-    "What subscription model does Memzo offer?":
-        "Memzo offers flexible subscription plans tailored to different user needs. Our plans include basic, professional, and enterprise tiers with varying features and pricing to accommodate photographers of all scales.",
-    "How do I create an account on Memzo?":
-        "Creating an account on Memzo is simple! Visit our website or download our mobile app, click on 'Sign Up', fill in your details including name, email, and password, verify your email address, and you're ready to start using Memzo's features.",
-    "I forgot my Memzo password/am unable to log in to my account. How can I reset it?":
-        "If you've forgotten your password, click on 'Forgot Password' on the login page, enter your registered email address, check your email for a reset link, click the link and create a new password. If you're still having trouble, contact our support team for assistance.",
+    "What does the Coding Club offer to students?":
+        "The Coding Club provides a platform for students to explore programming, build real-world projects, participate in hackathons, and collaborate on open-source contributions. We host weekly coding sessions, workshops, and tech talks to help students enhance their technical skills and creativity.",
+    "Do I need prior coding experience to join the club?":
+        "Not at all! Our club welcomes students of all skill levels. Whether you're just starting out or already experienced, you'll find events and resources tailored to your level — plus a supportive community to help you grow.",
+    "How can I become a member of the Coding Club?":
+        "Joining is easy! Just attend one of our orientation sessions or sign up through our club portal. You'll need to provide basic details like your name, branch, and college email. Once registered, you’ll get access to all upcoming events, coding challenges, and project teams.",
+    "I missed a workshop or event. Can I still access the content?":
+        "Yes! We archive all of our sessions, workshops, and slides on our club’s internal platform or Google Drive. You can always revisit the material and even reach out to mentors if you have any questions.",
   };
 
   Set<String> expandedQuestions = {};

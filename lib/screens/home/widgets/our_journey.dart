@@ -76,10 +76,8 @@ class OurJourneyWidget extends StatelessWidget {
           LayoutBuilder(
             builder: (context, constraints) {
               if (constraints.maxWidth > 1000) {
-
                 return Column(
                   children: [
-
                     Row(
                       children:
                           journeyStats
@@ -118,7 +116,6 @@ class OurJourneyWidget extends StatelessWidget {
                   ],
                 );
               } else if (constraints.maxWidth > 600) {
-   
                 return Column(
                   children: [
                     for (int i = 0; i < journeyStats.length; i += 2)
@@ -150,7 +147,6 @@ class OurJourneyWidget extends StatelessWidget {
                   ],
                 );
               } else {
-      
                 return Column(
                   children: [
                     for (int i = 0; i < journeyStats.length; i += 2)
@@ -190,99 +186,163 @@ class OurJourneyWidget extends StatelessWidget {
   }
 
   Widget _buildStatCard(Map<String, dynamic> stat, bool isWeb) {
-    return Container(
-      height: isWeb ? 240 : 140,
-      padding: EdgeInsets.all(isWeb ? 24 : 16),
-      decoration: BoxDecoration(color: Colors.transparent),
-      child: Stack(
-        children: [
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: isWeb ? 60 : 40,
-                  height: isWeb ? 60 : 30,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    stat['icon'],
-                    size: isWeb ? 24 : 20,
-                    color: Colors.white,
-                  ),
-                ),
+    return StatCardWidget(stat: stat, isWeb: isWeb);
+  }
+}
 
-                SizedBox(height: isWeb ? 16 : 12),
+class StatCardWidget extends StatefulWidget {
+  final Map<String, dynamic> stat;
+  final bool isWeb;
 
-                Text(
-                  stat['number'],
-                  style: TextStyle(
-                    fontSize: isWeb ? 24 : 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+  const StatCardWidget({Key? key, required this.stat, required this.isWeb})
+    : super(key: key);
+
+  @override
+  State<StatCardWidget> createState() => _StatCardWidgetState();
+}
+
+class _StatCardWidgetState extends State<StatCardWidget>
+    with SingleTickerProviderStateMixin {
+  bool isHovered = false;
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _iconScaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.05,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    _iconScaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.2,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) {
+        setState(() => isHovered = true);
+        _controller.forward();
+      },
+      onExit: (_) {
+        setState(() => isHovered = false);
+        _controller.reverse();
+      },
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return Transform.scale(
+            scale: _scaleAnimation.value,
+            child: Container(
+              height: widget.isWeb ? 240 : 140,
+              padding: EdgeInsets.all(widget.isWeb ? 24 : 16),
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Stack(
+                children: [
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Transform.scale(
+                          scale: _iconScaleAnimation.value,
+                          child: Container(
+                            width: widget.isWeb ? 60 : 40,
+                            height: widget.isWeb ? 60 : 30,
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              widget.stat['icon'],
+                              size: widget.isWeb ? 24 : 20,
+                              color:
+                                  isHovered ? Color(0xFF6366F1) : Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: widget.isWeb ? 16 : 12),
+                        AnimatedDefaultTextStyle(
+                          duration: const Duration(milliseconds: 200),
+                          style: TextStyle(
+                            fontSize: widget.isWeb ? 24 : 20,
+                            fontWeight: FontWeight.bold,
+                            color: isHovered ? Color(0xFF6366F1) : Colors.white,
+                          ),
+                          child: Text(widget.stat['number']),
+                        ),
+                        SizedBox(height: widget.isWeb ? 8 : 4),
+                        Text(
+                          widget.stat['label'],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: widget.isWeb ? 12 : 10,
+                            color: Colors.grey[400],
+                            height: 1.3,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-
-                SizedBox(height: isWeb ? 8 : 4),
-
-                Text(
-                  stat['label'],
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: isWeb ? 12 : 10,
-                    color: Colors.grey[400],
-                    height: 1.3,
+                  CustomPaint(
+                    painter: BorderLinesPainter(isHovered: isHovered),
+                    size: Size.infinite,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-
-  
-          CustomPaint(painter: BorderLinesPainter(), size: Size.infinite),
-        ],
+          );
+        },
       ),
     );
   }
 }
 
 class BorderLinesPainter extends CustomPainter {
+  final bool isHovered;
+
+  BorderLinesPainter({this.isHovered = false});
+
   @override
   void paint(Canvas canvas, Size size) {
     final Paint dotPaint =
         Paint()
-          ..color = Colors.grey[500]!
+          ..color = isHovered ? Color(0xFF6366F1)! : Colors.grey[500]!
           ..style = PaintingStyle.fill;
-
 
     final Paint linePaint =
         Paint()
           ..strokeWidth = 1
           ..style = PaintingStyle.stroke;
 
+    final Color lineColor = isHovered ? Color(0xFF6366F1)! : Colors.grey[600]!;
 
     linePaint.shader = LinearGradient(
-      colors: [
-        Colors.transparent,
-        Colors.grey[600]!,
-        Colors.grey[600]!,
-        Colors.transparent,
-      ],
+      colors: [Colors.transparent, lineColor, lineColor, Colors.transparent],
       stops: [0.0, 0.3, 0.7, 1.0],
     ).createShader(Rect.fromLTWH(20, 0, size.width - 40, 1));
 
     canvas.drawLine(Offset(20, 0), Offset(size.width - 20, 0), linePaint);
 
     linePaint.shader = LinearGradient(
-      colors: [
-        Colors.transparent,
-        Colors.grey[600]!,
-        Colors.grey[600]!,
-        Colors.transparent,
-      ],
+      colors: [Colors.transparent, lineColor, lineColor, Colors.transparent],
       stops: [0.0, 0.3, 0.7, 1.0],
     ).createShader(Rect.fromLTWH(20, size.height - 1, size.width - 40, 1));
 
@@ -295,12 +355,7 @@ class BorderLinesPainter extends CustomPainter {
     linePaint.shader = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [
-        Colors.transparent,
-        Colors.grey[600]!,
-        Colors.grey[600]!,
-        Colors.transparent,
-      ],
+      colors: [Colors.transparent, lineColor, lineColor, Colors.transparent],
       stops: [0.0, 0.3, 0.7, 1.0],
     ).createShader(Rect.fromLTWH(0, 20, 1, size.height - 40));
 
@@ -309,12 +364,7 @@ class BorderLinesPainter extends CustomPainter {
     linePaint.shader = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [
-        Colors.transparent,
-        Colors.grey[600]!,
-        Colors.grey[600]!,
-        Colors.transparent,
-      ],
+      colors: [Colors.transparent, lineColor, lineColor, Colors.transparent],
       stops: [0.0, 0.3, 0.7, 1.0],
     ).createShader(Rect.fromLTWH(size.width - 1, 20, 1, size.height - 40));
 
@@ -327,14 +377,11 @@ class BorderLinesPainter extends CustomPainter {
     final double dotRadius = 2;
 
     canvas.drawCircle(Offset(0, 0), dotRadius, dotPaint);
-
     canvas.drawCircle(Offset(size.width, 0), dotRadius, dotPaint);
-
     canvas.drawCircle(Offset(0, size.height - 1), dotRadius, dotPaint);
-
     canvas.drawCircle(Offset(size.width, size.height - 1), dotRadius, dotPaint);
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }

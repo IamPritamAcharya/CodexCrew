@@ -4,11 +4,63 @@ import 'package:url_launcher/url_launcher.dart';
 class SimpleFooter extends StatelessWidget {
   const SimpleFooter({Key? key}) : super(key: key);
 
+  static const Map<String, String> brandInfo = {
+    'name': 'Codex Crew',
+    'tagline': 'Building amazing experiences for everyone.',
+  };
+
+  static const Map<String, Map<String, dynamic>> contactInfo = {
+    'email': {
+      'icon': Icons.email,
+      'label': 'codexcrew@gmail.com',
+      'action': 'mailto:codexcrew@gmail.com',
+    },
+    'phone': {
+      'icon': Icons.phone,
+      'label': '+91 6370486583',
+      'action': 'tel:+916370486583',
+    },
+    'location': {
+      'icon': Icons.location_on,
+      'label': 'Sarang, Odisha',
+      'action':
+          'https://www.google.com/maps/place/Indira+Gandhi+Institute+Of+Technology,+Sarang/@20.9350375,85.2632969,17z/data=!3m1!4b1!4m6!3m5!1s0x3a18b5e2246737db:0x464c86301dac34cb!8m2!3d20.9350375!4d85.2632969!16s%2Fm%2F02vkz4b?entry=ttu&g_ep=EgoyMDI1MDcwOS4wIKXMDSoASAFQAw%3D%3D',
+    },
+  };
+
+  static const Map<String, Map<String, String>> socialMedia = {
+    'instagram': {
+      'name': 'Instagram',
+      'url': 'https://www.instagram.com/yourapp',
+      'icon': 'https://cdn-icons-png.flaticon.com/512/2111/2111463.png',
+    },
+    'linkedin': {
+      'name': 'LinkedIn',
+      'url': 'https://www.linkedin.com/company/yourapp',
+      'icon': 'https://cdn-icons-png.flaticon.com/512/174/174857.png',
+    },
+    'twitter': {
+      'name': 'Twitter',
+      'url': 'https://www.twitter.com/yourapp',
+      'icon': 'https://cdn-icons-png.flaticon.com/512/733/733579.png',
+    },
+  };
+
+  static const Map<String, String> copyrightInfo = {
+    'year': '2025',
+    'company': 'Codex Crew',
+    'text': 'All rights reserved.',
+  };
+
   Future<void> _launchURL(String url) async {
     final Uri uri = Uri.parse(url);
     if (!await launchUrl(uri)) {
       throw Exception('Could not launch $url');
     }
+  }
+
+  void _handleNavigation(String route) {
+    print('Navigate to $route');
   }
 
   @override
@@ -27,18 +79,13 @@ class SimpleFooter extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-
           if (isMobile) _buildMobileLayout() else _buildDesktopLayout(isTablet),
-
           SizedBox(height: isMobile ? 20 : 30),
-
           Container(
             height: 1,
             color: Colors.grey[800],
             margin: const EdgeInsets.only(bottom: 20),
           ),
-
-      
           _buildBottomSection(isMobile),
         ],
       ),
@@ -49,17 +96,10 @@ class SimpleFooter extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-    
         _buildBrandSection(true),
         const SizedBox(height: 25),
-
-        _buildNavigationLinks(true),
-        const SizedBox(height: 25),
-
         _buildContactInfo(true),
         const SizedBox(height: 25),
-
-  
         _buildSocialMedia(true),
       ],
     );
@@ -70,20 +110,10 @@ class SimpleFooter extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-   
         Expanded(flex: 2, child: _buildBrandSection(false)),
-
         if (!isTablet) const SizedBox(width: 40),
-
-       
-        Expanded(flex: 1, child: _buildNavigationLinks(false)),
-
-        if (!isTablet) const SizedBox(width: 40),
-
         Expanded(flex: 1, child: _buildContactInfo(false)),
-
         if (!isTablet) const SizedBox(width: 40),
-
         Expanded(flex: 1, child: _buildSocialMedia(false)),
       ],
     );
@@ -95,7 +125,7 @@ class SimpleFooter extends StatelessWidget {
           isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
         Text(
-          'Your App Name',
+          brandInfo['name']!,
           style: TextStyle(
             color: Colors.white,
             fontSize: isMobile ? 20 : 24,
@@ -104,35 +134,13 @@ class SimpleFooter extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'Building amazing experiences for everyone.',
+          brandInfo['tagline']!,
           style: TextStyle(
             color: Colors.grey[400],
             fontSize: isMobile ? 14 : 16,
           ),
           textAlign: isMobile ? TextAlign.center : TextAlign.left,
         ),
-      ],
-    );
-  }
-
-  Widget _buildNavigationLinks(bool isMobile) {
-    return Column(
-      crossAxisAlignment:
-          isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Quick Links',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: isMobile ? 16 : 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 12),
-        _buildNavLink('Home', isMobile),
-        _buildNavLink('About', isMobile),
-        _buildNavLink('Services', isMobile),
-        _buildNavLink('Contact', isMobile),
       ],
     );
   }
@@ -151,9 +159,16 @@ class SimpleFooter extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        _buildContactItem(Icons.email, 'hello@yourapp.com', isMobile),
-        _buildContactItem(Icons.phone, '+1 (555) 123-4567', isMobile),
-        _buildContactItem(Icons.location_on, 'Your City, Country', isMobile),
+        ...contactInfo.entries
+            .map(
+              (entry) => _buildContactItem(
+                entry.value['icon'] as IconData,
+                entry.value['label'] as String,
+                entry.value['action'] as String,
+                isMobile,
+              ),
+            )
+            .toList(),
       ],
     );
   }
@@ -172,50 +187,37 @@ class SimpleFooter extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        Row(
-          mainAxisAlignment:
-              isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
-          children: [
-            _buildSocialIcon(
-              'https://cdn-icons-png.flaticon.com/512/2111/2111463.png',
-              'https://www.instagram.com',
-              isMobile ? 28 : 32,
-            ),
-            const SizedBox(width: 15),
-            _buildSocialIcon(
-              'https://cdn-icons-png.flaticon.com/512/174/174857.png',
-              'https://www.linkedin.com',
-              isMobile ? 28 : 32,
-            ),
-            const SizedBox(width: 15),
-            _buildSocialIcon(
-              'https://cdn-icons-png.flaticon.com/512/733/733579.png',
-              'https://www.twitter.com',
-              isMobile ? 28 : 32,
-            ),
-          ],
+        Wrap(
+          alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
+          spacing: 15,
+          runSpacing: 10,
+          children:
+              socialMedia.entries
+                  .map(
+                    (entry) => _buildSocialIcon(
+                      entry.value['icon']!,
+                      entry.value['url']!,
+                      entry.value['name']!,
+                      isMobile ? 28 : 32,
+                    ),
+                  )
+                  .toList(),
         ),
       ],
     );
   }
 
   Widget _buildBottomSection(bool isMobile) {
+    String copyrightText =
+        '© ${copyrightInfo['year']} ${copyrightInfo['company']}. ${copyrightInfo['text']}';
+
     if (isMobile) {
       return Column(
         children: [
           Text(
-            '© 2025 Your App Name. All rights reserved.',
+            copyrightText,
             style: TextStyle(color: Colors.grey[400], fontSize: 12),
             textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildFooterLink('Privacy Policy', true),
-              Text(' • ', style: TextStyle(color: Colors.grey[600])),
-              _buildFooterLink('Terms of Service', true),
-            ],
           ),
         ],
       );
@@ -225,92 +227,176 @@ class SimpleFooter extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          '© 2025 Your App Name. All rights reserved.',
+          copyrightText,
           style: TextStyle(color: Colors.grey[400], fontSize: 14),
-        ),
-        Row(
-          children: [
-            _buildFooterLink('Privacy Policy', false),
-            const SizedBox(width: 20),
-            _buildFooterLink('Terms of Service', false),
-          ],
         ),
       ],
     );
   }
 
-  Widget _buildNavLink(String text, bool isMobile) {
+  Widget _buildContactItem(
+    IconData icon,
+    String text,
+    String action,
+    bool isMobile,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: () => _launchURL(action),
+          child: HoverableContactItem(
+            icon: icon,
+            text: text,
+            isMobile: isMobile,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSocialIcon(
+    String iconUrl,
+    String url,
+    String name,
+    double size,
+  ) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () {
-        
-          print('Navigate to $text');
-        },
-        child: Text(
-          text,
-          style: TextStyle(
-            color: Colors.grey[300],
-            fontSize: isMobile ? 14 : 15,
-          ),
+        onTap: () => _launchURL(url),
+        child: Tooltip(
+          message: name,
+          child: HoverableSocialIcon(iconUrl: iconUrl, size: size),
         ),
       ),
     );
   }
+}
 
-  Widget _buildContactItem(IconData icon, String text, bool isMobile) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: Colors.grey[400], size: isMobile ? 16 : 18),
-          const SizedBox(width: 8),
-          Text(
-            text,
-            style: TextStyle(
-              color: Colors.grey[300],
-              fontSize: isMobile ? 14 : 15,
+class HoverableText extends StatefulWidget {
+  final String text;
+  final TextStyle style;
+  final TextStyle hoverStyle;
+
+  const HoverableText({
+    Key? key,
+    required this.text,
+    required this.style,
+    required this.hoverStyle,
+  }) : super(key: key);
+
+  @override
+  State<HoverableText> createState() => _HoverableTextState();
+}
+
+class _HoverableTextState extends State<HoverableText> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedDefaultTextStyle(
+        duration: const Duration(milliseconds: 200),
+        style: _isHovered ? widget.hoverStyle : widget.style,
+        child: Text(widget.text),
+      ),
+    );
+  }
+}
+
+class HoverableContactItem extends StatefulWidget {
+  final IconData icon;
+  final String text;
+  final bool isMobile;
+
+  const HoverableContactItem({
+    Key? key,
+    required this.icon,
+    required this.text,
+    required this.isMobile,
+  }) : super(key: key);
+
+  @override
+  State<HoverableContactItem> createState() => _HoverableContactItemState();
+}
+
+class _HoverableContactItemState extends State<HoverableContactItem> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              widget.icon,
+              color: _isHovered ? Colors.white : Colors.grey[400],
+              size: widget.isMobile ? 16 : 18,
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFooterLink(String text, bool isMobile) {
-    return GestureDetector(
-      onTap: () {
-
-        print('Open $text');
-      },
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.grey[400],
-          fontSize: isMobile ? 12 : 14,
-          decoration: TextDecoration.underline,
+            const SizedBox(width: 8),
+            Text(
+              widget.text,
+              style: TextStyle(
+                color: _isHovered ? Colors.white : Colors.grey[300],
+                fontSize: widget.isMobile ? 14 : 15,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildSocialIcon(String iconUrl, String url, double size) {
-    return GestureDetector(
-      onTap: () => _launchURL(url),
-      child: Container(
+class HoverableSocialIcon extends StatefulWidget {
+  final String iconUrl;
+  final double size;
+
+  const HoverableSocialIcon({
+    Key? key,
+    required this.iconUrl,
+    required this.size,
+  }) : super(key: key);
+
+  @override
+  State<HoverableSocialIcon> createState() => _HoverableSocialIconState();
+}
+
+class _HoverableSocialIconState extends State<HoverableSocialIcon> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: Colors.grey[900],
+          color: _isHovered ? Colors.grey[700] : Colors.grey[900],
         ),
         child: Image.network(
-          iconUrl,
-          width: size,
-          height: size,
-          color: Colors.white,
+          widget.iconUrl,
+          width: widget.size,
+          height: widget.size,
+          color: _isHovered ? Colors.grey[200] : null,
           errorBuilder: (context, error, stackTrace) {
-            return Icon(Icons.error, size: size, color: Colors.grey[400]);
+            return Icon(
+              Icons.error,
+              size: widget.size,
+              color: Colors.grey[400],
+            );
           },
         ),
       ),

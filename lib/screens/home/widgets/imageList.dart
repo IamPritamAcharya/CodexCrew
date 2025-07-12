@@ -7,38 +7,37 @@ class ImageList extends StatelessWidget {
   static const List<Map<String, String>> clientsData = [
     {
       'imageUrl':
-          'https://images.unsplash.com/photo-1554048612-b6a482b224d1?w=400&h=300&fit=crop',
-      'title': 'Photographers',
-      'subtitle': 'Elevate your photography business with\nKamero.',
+          'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop',
+      'title': 'Hackathons',
+      'subtitle':
+          'Power your coding events with real-time\nAI-powered media tools.',
       'description':
-          'Transform your photography workflow with our AI-powered platform. Kamero helps photographers streamline their business operations, from client management to photo delivery. Our intelligent system automatically organizes, tags, and enhances your photos, allowing you to focus on what you do best - capturing beautiful moments. With seamless integration and automated workflows, you can deliver exceptional experiences to your clients while growing your business efficiently.',
+          'Make your hackathons unforgettable with our intelligent photo management platform. Automatically capture, organize, and tag moments during the event, enabling seamless sharing on social media. Use live feeds and branded albums to highlight creativity, teamwork, and innovation. Perfect for showcasing talent, building community, and engaging sponsors and attendees in real time.',
     },
     {
       'imageUrl':
           'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop',
-      'title': 'Corporate Events',
+      'title': 'Tech Talks & Seminars',
       'subtitle':
-          'Transform your business events with real-\ntime AI photo sharing.',
+          'Automate content capture for your tech\nsessions and workshops.',
       'description':
-          'Revolutionize your corporate events with instant AI-powered photo sharing and management. Our platform enables real-time photo distribution, automatic face recognition for attendee tagging, and seamless social media integration. Create memorable corporate experiences with features like live photo walls, instant printing stations, and branded photo albums. Perfect for conferences, team building events, product launches, and company celebrations.',
+          'Effortlessly document your tech talks and coding seminars with AI-assisted photo organization and sharing. Whether it\'s a guest speaker session or hands-on workshop, our platform helps you preserve key moments, create branded event albums, and share content with your community instantly. Engage attendees, promote your club, and build a digital legacy for every session.',
     },
     {
       'imageUrl':
           'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=400&h=300&fit=crop',
-      'title': 'School and Colleges',
-      'subtitle':
-          'Simplify photo management, create\ncollaborative yearbooks with AI.',
+      'title': 'Coding Bootcamps',
+      'subtitle': 'Track learning journeys with smart\nevent photo curation.',
       'description':
-          'Streamline educational photo management with our comprehensive AI solution. Create collaborative yearbooks, manage school events, and organize student photos effortlessly. Our platform offers secure photo sharing with parents, automated class photo organization, and easy yearbook creation tools. Teachers and administrators can efficiently manage photo permissions, create memorable school albums, and maintain organized digital archives of school memories.',
+          'Document your coding bootcamps and training sessions with ease. Our AI-based platform organizes photos by activity, session, and participant, helping clubs showcase progress and enthusiasm. Share curated stories on social media, build project timelines, and create recap albums to highlight growth, collaboration, and success stories across the club.',
     },
     {
       'imageUrl':
           'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=400&h=300&fit=crop',
-      'title': 'Live Events & Concerts',
-      'subtitle':
-          'Amplify your event with seamless social\nsharing, personalized hashtags.',
+      'title': 'Club Showcases & Demos',
+      'subtitle': 'Boost visibility with live sharing,\ninteractive galleries.',
       'description':
-          'Enhance live events and concerts with dynamic photo sharing and social media amplification. Our platform provides real-time photo streaming, custom hashtag campaigns, and instant social media integration. Create immersive experiences with live photo feeds, fan engagement tools, and personalized photo memories. Perfect for music festivals, concerts, sporting events, and entertainment venues looking to maximize audience engagement and social media reach.',
+          'Elevate your demo days and club showcases with instant photo sharing, interactive displays, and branded galleries. Capture innovation in action and let your members shine. Perfect for project expos, app demos, and inter-club events, our platform ensures that your club’s achievements are professionally documented and widely celebrated.',
     },
   ];
 
@@ -57,7 +56,7 @@ class ImageList extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'Clients We Cater',
+            'Club Activities',
             style: TextStyle(
               fontSize: isWeb ? 36 : 28,
               fontWeight: FontWeight.bold,
@@ -67,7 +66,7 @@ class ImageList extends StatelessWidget {
           SizedBox(height: isWeb ? 16 : 12),
 
           Text(
-            'Memso empowers photographers, event organizers, and institutions to share their stories through\na seamless AI-powered platform.',
+            'Fueling innovation, collaboration, and creativity — where code meets community in every campus event.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: isWeb ? 16 : 14,
@@ -80,7 +79,6 @@ class ImageList extends StatelessWidget {
           LayoutBuilder(
             builder: (context, constraints) {
               if (constraints.maxWidth > 1200) {
-        
                 return Row(
                   children:
                       clientsData
@@ -97,7 +95,6 @@ class ImageList extends StatelessWidget {
                           .toList(),
                 );
               } else if (constraints.maxWidth > 800) {
-       
                 return Column(
                   children: [
                     Row(
@@ -136,7 +133,6 @@ class ImageList extends StatelessWidget {
                   ],
                 );
               } else {
-       
                 return Column(
                   children:
                       clientsData
@@ -196,7 +192,6 @@ class ImageList extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-       
                 ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(16),
@@ -274,7 +269,6 @@ class ImageList extends StatelessWidget {
                       ),
                       SizedBox(height: isWeb ? 20 : 16),
 
-                    
                       MouseRegion(
                         cursor: SystemMouseCursors.click,
                         child: GestureDetector(
@@ -352,7 +346,6 @@ class ImageList extends StatelessWidget {
             ),
             child: Column(
               children: [
-             
                 Container(
                   width: 40,
                   height: 4,
@@ -399,7 +392,6 @@ class ImageList extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                   
                         ClipRRect(
                           borderRadius: BorderRadius.circular(16),
                           child: Container(
@@ -483,7 +475,6 @@ class ImageList extends StatelessWidget {
 
                         SizedBox(height: isWeb ? 40 : 30),
 
-                      
                         isWeb
                             ? Row(
                               children: [

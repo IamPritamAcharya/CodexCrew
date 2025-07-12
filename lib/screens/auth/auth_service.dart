@@ -19,7 +19,7 @@ class AuthService {
   String? get userEmail => currentUser?.email;
   bool get isAdmin =>
       userEmail == 'pritamach.exe@gmail.com' ||
-      userEmail == 'bananisahoo20@gmail.com';
+      userEmail == 'bananisahoo526@gmail.com';
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 

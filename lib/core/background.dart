@@ -1,4 +1,3 @@
-
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
@@ -50,7 +49,7 @@ class GridPatternPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = Colors.white.withOpacity(0.015)
+          ..color = Colors.white.withOpacity(0.03)
           ..strokeWidth = 0.5
           ..style = PaintingStyle.stroke;
 
@@ -118,8 +117,8 @@ class AnimatedPatternPainter extends CustomPainter {
 
     final path = Path();
     final waveHeight = 30.0;
-   
-    final waveLength = 400.0; 
+
+    final waveLength = 400.0;
 
     for (int wave = 0; wave < 3; wave++) {
       final yOffset = size.height * 0.2 + wave * size.height * 0.3;
