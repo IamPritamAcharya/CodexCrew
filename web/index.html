@@ -15,6 +15,10 @@
   <base href="$FLUTTER_BASE_HREF">
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+
+  <!-- CRITICAL: Add this viewport meta tag for proper mobile rendering -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <meta name="description" content="A new Flutter project.">
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -233,6 +237,25 @@
       opacity: 0;
       transform: scale(0.95);
       pointer-events: none;
+    }
+
+    /* Additional CSS for mobile optimization */
+    @media (max-width: 768px) {
+      .loading-text {
+        font-size: 24px;
+        letter-spacing: 2px;
+      }
+
+      .loading-subtitle {
+        font-size: 14px;
+        letter-spacing: 1px;
+      }
+
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 30px;
+      }
     }
   </style>
 </head>
