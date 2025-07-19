@@ -1,3 +1,4 @@
+import 'package:codexcrew/screens/attendance/attendance_page.dart';
 import 'package:flutter/material.dart';
 
 class HeroActionButtons extends StatelessWidget {
@@ -22,7 +23,12 @@ class HeroActionButtons extends StatelessWidget {
           text: 'Learn More',
           isPrimary: false,
           isDesktop: isDesktop,
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AttendancePage()),
+            );
+          },
         ),
       ],
     );

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OurJourneyWidget extends StatelessWidget {
-  const OurJourneyWidget({Key? key}) : super(key: key);
+  const OurJourneyWidget({super.key});
 
   static const List<Map<String, dynamic>> journeyStats = [
     {
@@ -194,8 +194,7 @@ class StatCardWidget extends StatefulWidget {
   final Map<String, dynamic> stat;
   final bool isWeb;
 
-  const StatCardWidget({Key? key, required this.stat, required this.isWeb})
-    : super(key: key);
+  const StatCardWidget({super.key, required this.stat, required this.isWeb});
 
   @override
   State<StatCardWidget> createState() => _StatCardWidgetState();
@@ -324,7 +323,7 @@ class BorderLinesPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final Paint dotPaint =
         Paint()
-          ..color = isHovered ? Color(0xFF6366F1)! : Colors.grey[500]!
+          ..color = isHovered ? Color(0xFF6366F1) : Colors.grey[500]!
           ..style = PaintingStyle.fill;
 
     final Paint linePaint =
@@ -332,7 +331,7 @@ class BorderLinesPainter extends CustomPainter {
           ..strokeWidth = 1
           ..style = PaintingStyle.stroke;
 
-    final Color lineColor = isHovered ? Color(0xFF6366F1)! : Colors.grey[600]!;
+    final Color lineColor = isHovered ? Color(0xFF6366F1) : Colors.grey[600]!;
 
     linePaint.shader = LinearGradient(
       colors: [Colors.transparent, lineColor, lineColor, Colors.transparent],

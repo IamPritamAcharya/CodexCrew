@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 
 class ImageList extends StatelessWidget {
-  const ImageList({Key? key}) : super(key: key);
+  const ImageList({super.key});
 
   static const List<Map<String, String>> clientsData = [
     {
@@ -197,7 +197,7 @@ class ImageList extends StatelessWidget {
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16),
                   ),
-                  child: Container(
+                  child: SizedBox(
                     height: isWeb ? 200 : 180,
                     width: double.infinity,
                     child: Image.network(
@@ -394,7 +394,7 @@ class ImageList extends StatelessWidget {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(16),
-                          child: Container(
+                          child: SizedBox(
                             height: isWeb ? 250 : 200,
                             width: double.infinity,
                             child: Image.network(

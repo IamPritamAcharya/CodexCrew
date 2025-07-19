@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:codexcrew/screens/home/widgets/hero_title.dart';
 import 'package:flutter/material.dart';
 
 class HallOfFamePage extends StatefulWidget {
+  const HallOfFamePage({super.key});
+
   @override
   _HallOfFamePageState createState() => _HallOfFamePageState();
 }
@@ -145,7 +146,7 @@ class _HallOfFamePageState extends State<HallOfFamePage> {
                     ),
                   ),
                 )
-                : Container(
+                : SizedBox(
                   width: double.infinity,
                   child: Center(
                     child: Container(
@@ -310,7 +311,7 @@ class _HallOfFamePageState extends State<HallOfFamePage> {
                                               ),
                                             ),
                                           )
-                                          : Container(
+                                          : SizedBox(
                                             height: 280,
                                             child: ListView.builder(
                                               scrollDirection: Axis.horizontal,
@@ -415,7 +416,7 @@ class _HallOfFamePageState extends State<HallOfFamePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
+                  SizedBox(
                     width: double.infinity,
                     child: Text(
                       member['name'] ?? 'Unknown',

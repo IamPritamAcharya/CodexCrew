@@ -3,7 +3,6 @@ import 'package:codexcrew/core/nav_config.dart';
 import 'package:codexcrew/core/navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'dart:math' as math;
 
 class AppShell extends StatelessWidget {
   final Widget child;

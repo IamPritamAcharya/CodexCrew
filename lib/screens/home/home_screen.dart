@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'widgets/hero_section.dart';
 
 class HomePageContent extends StatelessWidget {
+  const HomePageContent({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(

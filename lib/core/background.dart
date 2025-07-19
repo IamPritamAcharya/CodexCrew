@@ -2,6 +2,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 class AnimatedBackground extends StatefulWidget {
+  const AnimatedBackground({super.key});
+
   @override
   _AnimatedBackgroundState createState() => _AnimatedBackgroundState();
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SimpleFooter extends StatelessWidget {
-  const SimpleFooter({Key? key}) : super(key: key);
+  const SimpleFooter({super.key});
 
   static const Map<String, String> brandInfo = {
     'name': 'Codex Crew',
@@ -168,7 +168,7 @@ class SimpleFooter extends StatelessWidget {
                 isMobile,
               ),
             )
-            .toList(),
+            ,
       ],
     );
   }
@@ -281,11 +281,11 @@ class HoverableText extends StatefulWidget {
   final TextStyle hoverStyle;
 
   const HoverableText({
-    Key? key,
+    super.key,
     required this.text,
     required this.style,
     required this.hoverStyle,
-  }) : super(key: key);
+  });
 
   @override
   State<HoverableText> createState() => _HoverableTextState();
@@ -314,11 +314,11 @@ class HoverableContactItem extends StatefulWidget {
   final bool isMobile;
 
   const HoverableContactItem({
-    Key? key,
+    super.key,
     required this.icon,
     required this.text,
     required this.isMobile,
-  }) : super(key: key);
+  });
 
   @override
   State<HoverableContactItem> createState() => _HoverableContactItemState();
@@ -362,10 +362,10 @@ class HoverableSocialIcon extends StatefulWidget {
   final double size;
 
   const HoverableSocialIcon({
-    Key? key,
+    super.key,
     required this.iconUrl,
     required this.size,
-  }) : super(key: key);
+  });
 
   @override
   State<HoverableSocialIcon> createState() => _HoverableSocialIconState();

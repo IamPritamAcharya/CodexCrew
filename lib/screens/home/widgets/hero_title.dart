@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class HeroTitle extends StatelessWidget {
   final bool isDesktop;
 
-  const HeroTitle({Key? key, required this.isDesktop}) : super(key: key);
+  const HeroTitle({super.key, required this.isDesktop});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class HeroTitle extends StatelessWidget {
 class HeroSubtitle extends StatelessWidget {
   final bool isDesktop;
 
-  const HeroSubtitle({Key? key, required this.isDesktop}) : super(key: key);
+  const HeroSubtitle({super.key, required this.isDesktop});
 
   @override
   Widget build(BuildContext context) {

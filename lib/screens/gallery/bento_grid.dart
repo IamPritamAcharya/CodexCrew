@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class BentoGrid extends StatefulWidget {
+  const BentoGrid({super.key});
+
   @override
   _BentoGridState createState() => _BentoGridState();
 }
@@ -395,7 +397,7 @@ class _BentoGridState extends State<BentoGrid> {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
               height: double.infinity,
               child: CachedNetworkImage(
@@ -477,10 +479,10 @@ class FullScreenImageView extends StatefulWidget {
   final String heroTag;
 
   const FullScreenImageView({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.heroTag,
-  }) : super(key: key);
+  });
 
   @override
   _FullScreenImageViewState createState() => _FullScreenImageViewState();
@@ -516,7 +518,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView>
       backgroundColor: Colors.black,
       body: GestureDetector(
         onTap: () => Navigator.of(context).pop(),
-        child: Container(
+        child: SizedBox(
           width: double.infinity,
           height: double.infinity,
           child: Stack(

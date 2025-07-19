@@ -1,3 +1,4 @@
+import 'package:codexcrew/screens/admin/admin2.dart';
 import 'package:codexcrew/screens/admin/admin_image_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:codexcrew/screens/leaderboards/students_model.dart';
 
 class AdminPage extends StatefulWidget {
+  const AdminPage({super.key});
+
   @override
   _AdminPageState createState() => _AdminPageState();
 }
@@ -136,32 +139,67 @@ class _AdminPageState extends State<AdminPage> {
               child: Column(
                 children: [
                   SizedBox(height: 110),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AdminImagePage(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AdminImagePage(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[900],
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 6,
+                          shadowColor: Colors.black.withOpacity(0.5),
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[900],
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 16,
+                        child: const Text(
+                          'Admin Gallery',
+                          style: TextStyle(fontSize: 16),
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+
+                      SizedBox(width: 10),
+
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AdminPage2(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[900],
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 6,
+                          shadowColor: Colors.black.withOpacity(0.5),
+                        ),
+                        child: const Text(
+                          'Admin Attendance',
+                          style: TextStyle(fontSize: 16),
+                        ),
                       ),
-                      elevation: 6,
-                      shadowColor: Colors.black.withOpacity(0.5),
-                    ),
-                    child: const Text(
-                      'Admin Gallery',
-                      style: TextStyle(fontSize: 16),
-                    ),
+                    ],
                   ),
 
                   Container(
@@ -384,13 +422,13 @@ class _AdminPageState extends State<AdminPage> {
                                         Divider(),
                                         SizedBox(height: 4),
                                         Text(
-                                          '${student.registrationNumber}',
+                                          student.registrationNumber,
                                           style: TextStyle(
                                             color: Colors.deepPurple[400],
                                           ),
                                         ),
                                         Text(
-                                          '${student.branch}',
+                                          student.branch,
                                           style: TextStyle(
                                             color: Colors.grey[400],
                                           ),

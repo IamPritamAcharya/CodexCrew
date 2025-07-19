@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AdminImagePage extends StatefulWidget {
+  const AdminImagePage({super.key});
+
   @override
   _AdminImagePageState createState() => _AdminImagePageState();
 }

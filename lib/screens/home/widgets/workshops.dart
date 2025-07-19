@@ -233,7 +233,7 @@ class _WorkshopPageState extends State<WorkshopPage> {
       _currentIndex = 0;
     }
 
-    return Container(
+    return SizedBox(
       height: isDesktop ? 800 : 500,
       child: Stack(
         children: [
@@ -345,7 +345,7 @@ class _WorkshopPageState extends State<WorkshopPage> {
   }
 
   Widget _buildLoadingState() {
-    return Container(
+    return SizedBox(
       height: 800,
       child: Center(
         child: CircularProgressIndicator(
@@ -356,7 +356,7 @@ class _WorkshopPageState extends State<WorkshopPage> {
   }
 
   Widget _buildErrorState() {
-    return Container(
+    return SizedBox(
       height: 800,
       child: Center(
         child: Column(
@@ -377,7 +377,7 @@ class _WorkshopPageState extends State<WorkshopPage> {
   }
 
   Widget _buildEmptyState(bool isDesktop) {
-    return Container(
+    return SizedBox(
       height: 800,
       child: Center(
         child: Column(

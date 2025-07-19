@@ -43,8 +43,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A), 
-
+      backgroundColor: const Color(0xFF0A0A0A),
       body: _buildBody(context),
     );
   }
@@ -174,34 +173,40 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-       
         final crossAxisCount = isMobile ? 1 : 2;
         final childAspectRatio = 2.5;
-        final padding = EdgeInsets.all(
-          isMobile ? 12 : 32,
-        ); 
-        final spacing = isMobile ? 12.0 : 24.0; 
-
-   
+        final spacing = isMobile ? 12.0 : 24.0;
         final maxWidth = isMobile ? double.infinity : 1400.0;
+        final horizontalPadding = isMobile ? 12.0 : 32.0;
 
         return Center(
           child: Container(
             constraints: BoxConstraints(maxWidth: maxWidth),
-            padding: EdgeInsets.only(top: 100, bottom: 50),
-            child: GridView.builder(
-              padding: padding,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                crossAxisSpacing: spacing,
-                mainAxisSpacing: spacing,
-                childAspectRatio: childAspectRatio,
-              ),
-              itemCount: _resources.length,
-              itemBuilder: (context, index) {
-                final resource = _resources[index];
-                return _buildResourceCard(resource, context);
-              },
+            child: CustomScrollView(
+              slivers: [
+                // Top spacing
+                SliverPadding(padding: const EdgeInsets.only(top: 100)),
+
+                // Grid content
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  sliver: SliverGrid(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final resource = _resources[index];
+                      return _buildResourceCard(resource, context);
+                    }, childCount: _resources.length),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      crossAxisSpacing: spacing,
+                      mainAxisSpacing: spacing,
+                      childAspectRatio: childAspectRatio,
+                    ),
+                  ),
+                ),
+
+                // Bottom spacing for scroll area
+                SliverPadding(padding: const EdgeInsets.only(bottom: 50)),
+              ],
             ),
           ),
         );
@@ -268,7 +273,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
           ),
           child: Row(
             children: [
-     
               Expanded(
                 flex: isMobile ? 1 : 2,
                 child: Container(
@@ -286,7 +290,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                               left: Radius.circular(16),
                             ),
                             child: Image.network(
-                              resource.imageUrl,
+                              'https://api.allorigins.win/raw?url=${Uri.encodeComponent(resource.imageUrl)}',
                               fit: BoxFit.cover,
                               loadingBuilder: (
                                 context,
@@ -329,10 +333,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                     child: Icon(
                                       Icons.image_not_supported_outlined,
                                       color: Colors.white.withOpacity(0.4),
-                                      size:
-                                          isMobile
-                                              ? 24
-                                              : 48, 
+                                      size: isMobile ? 24 : 48,
                                     ),
                                   ),
                                 );
@@ -354,10 +355,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                               child: Icon(
                                 Icons.description_outlined,
                                 color: const Color(0xFF6C5CE7),
-                                size:
-                                    isMobile
-                                        ? 24
-                                        : 48,
+                                size: isMobile ? 24 : 48,
                               ),
                             ),
                           ),
@@ -367,7 +365,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
               Expanded(
                 flex: isMobile ? 2 : 3,
                 child: Padding(
-                  padding: EdgeInsets.all(24), 
+                  padding: EdgeInsets.all(24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -375,8 +373,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                       Text(
                         resource.title,
                         style: TextStyle(
-                          fontSize:
-                              isMobile ? 14 : 20, 
+                          fontSize: isMobile ? 14 : 20,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                           height: 1.3,

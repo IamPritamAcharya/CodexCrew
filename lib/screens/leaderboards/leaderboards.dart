@@ -10,6 +10,8 @@ class StudentWithRank {
 }
 
 class LeaderboardPage extends StatelessWidget {
+  const LeaderboardPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -29,7 +31,7 @@ class LeaderboardPage extends StatelessWidget {
                         .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
-                    return Container(
+                    return SizedBox(
                       height: 200,
                       child: Center(
                         child: Text(
@@ -44,7 +46,7 @@ class LeaderboardPage extends StatelessWidget {
                   }
 
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Container(
+                    return SizedBox(
                       height: 200,
                       child: const Center(
                         child: CircularProgressIndicator(
@@ -117,7 +119,7 @@ class LeaderboardPage extends StatelessWidget {
                           studentWithRank.rank,
                           isWide,
                         );
-                      }).toList(),
+                      }),
                     ],
                   ),
                 ),

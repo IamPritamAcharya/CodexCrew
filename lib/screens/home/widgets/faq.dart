@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class FAQSection extends StatefulWidget {
+  const FAQSection({super.key});
+
   @override
   _FAQSectionState createState() => _FAQSectionState();
 }
@@ -134,7 +136,7 @@ class _FAQSectionState extends State<FAQSection>
                 ],
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );
