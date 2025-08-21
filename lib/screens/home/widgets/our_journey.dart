@@ -6,37 +6,25 @@ class OurJourneyWidget extends StatelessWidget {
 
   static const List<Map<String, dynamic>> journeyStats = [
     {
-      'icon': CupertinoIcons.down_arrow,
-      'number': '1500+',
-      'label': 'Total App Downloads',
-    },
-    {
-      'icon': CupertinoIcons.calendar,
-      'number': '2.5K+',
-      'label': 'Events Covered',
-    },
-    {
-      'icon': CupertinoIcons.photo_camera,
-      'number': '15K+',
-      'label': 'Photos Uploaded',
-    },
-    {'icon': CupertinoIcons.person, 'number': '25K+', 'label': 'Faces Scanned'},
-    {'icon': CupertinoIcons.star, 'number': '4.8/5', 'label': 'Average Rating'},
-    {
-      'icon': CupertinoIcons.heart,
-      'number': '500+',
-      'label': 'Happy Customers',
-    },
-    {
-      'icon': CupertinoIcons.location,
+      'icon': CupertinoIcons.person_2,
       'number': '50+',
-      'label': 'Cities Covered',
+      'label': 'Active Members',
+    },
+    {'icon': CupertinoIcons.book, 'number': '20+', 'label': 'Club Workshops'},
+    {
+      'icon': CupertinoIcons.capsule,
+      'number': '15+',
+      'label': 'Built Projects',
     },
     {
-      'icon': CupertinoIcons.clock,
-      'number': '24/7',
-      'label': 'Support Available',
+      'icon': CupertinoIcons.lightbulb,
+      'number': '100+',
+      'label': 'Ideas Shared',
     },
+    {'icon': CupertinoIcons.star, 'number': '4.9/5', 'label': 'Club Rating'},
+    {'icon': CupertinoIcons.group, 'number': '10+', 'label': 'Team Events'},
+    {'icon': CupertinoIcons.globe, 'number': '5+', 'label': 'Hackathon Wins'},
+    {'icon': CupertinoIcons.clock, 'number': 'Since 2023', 'label': 'Club Age'},
   ];
 
   @override
@@ -63,7 +51,7 @@ class OurJourneyWidget extends StatelessWidget {
           SizedBox(height: isWeb ? 16 : 8),
 
           Text(
-            'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+            'From a small group of passionate learners to a thriving community, we’ve grown together through projects, hackathons, and countless coding sessions.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: isWeb ? 16 : 14,

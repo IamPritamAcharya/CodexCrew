@@ -277,54 +277,67 @@
   </div>
 
   <script>
-    // Hide loading screen when Flutter app is ready
-    window.addEventListener('flutter-first-frame', function () {
+    // Safer DOM manipulation with null checks
+    function hideLoadingScreen() {
       const loadingScreen = document.getElementById('loading-screen');
       const blurOverlay = document.getElementById('blur-overlay');
 
-      // First, fade out the loading screen content
-      loadingScreen.classList.add('hidden');
-
-      // Remove loading screen after it fades out
-      setTimeout(() => {
-        loadingScreen.remove();
-      }, 800);
-
-      // Keep blur for additional time, then fade it out
-      setTimeout(() => {
-        blurOverlay.classList.add('fade-out');
-
-        // Remove blur overlay after it fades out
-        setTimeout(() => {
-          blurOverlay.remove();
-        }, 1200);
-      }, 1000); // Persist blur for 1 second after loading screen starts fading
-    });
-
-    // Fallback: Hide loading screen after 10 seconds
-    setTimeout(() => {
-      const loadingScreen = document.getElementById('loading-screen');
-      const blurOverlay = document.getElementById('blur-overlay');
-
-      if (loadingScreen) {
+      if (loadingScreen && loadingScreen.classList) {
         loadingScreen.classList.add('hidden');
         setTimeout(() => {
-          loadingScreen.remove();
+          if (loadingScreen && loadingScreen.parentNode) {
+            loadingScreen.parentNode.removeChild(loadingScreen);
+          }
         }, 800);
       }
 
-      if (blurOverlay) {
+      if (blurOverlay && blurOverlay.classList) {
         setTimeout(() => {
           blurOverlay.classList.add('fade-out');
           setTimeout(() => {
-            blurOverlay.remove();
+            if (blurOverlay && blurOverlay.parentNode) {
+              blurOverlay.parentNode.removeChild(blurOverlay);
+            }
           }, 1200);
         }, 1000);
       }
-    }, 10000);
+    }
+
+    // Listen for Flutter's first frame event
+    window.addEventListener('flutter-first-frame', hideLoadingScreen);
+
+    // Fallback: Hide loading screen after 10 seconds
+    setTimeout(hideLoadingScreen, 10000);
+
+    // Wait for DOM to be ready before setting up Flutter
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupFlutter);
+    } else {
+      setupFlutter();
+    }
+
+    function setupFlutter() {
+      // Initialize Flutter with proper error handling
+      if (typeof _flutter !== 'undefined' && _flutter.loader) {
+        _flutter.loader.loadEntrypoint({
+          serviceWorker: {
+            serviceWorkerVersion: null,
+          }
+        }).then(function (engineInitializer) {
+          return engineInitializer.initializeEngine();
+        }).then(function (appRunner) {
+          return appRunner.runApp();
+        }).catch(function (error) {
+          console.error('Flutter initialization error:', error);
+          // Still hide loading screen on error
+          hideLoadingScreen();
+        });
+      }
+    }
   </script>
 
-  <script src="flutter_bootstrap.js" async></script>
+  <!-- Load Flutter's bootstrap script -->
+  <script src="flutter_bootstrap.js" defer></script>
 </body>
 
 </html>

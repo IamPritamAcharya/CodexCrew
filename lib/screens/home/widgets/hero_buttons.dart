@@ -1,3 +1,4 @@
+import 'package:codexcrew/notice_page.dart';
 import 'package:codexcrew/screens/attendance/attendance_page.dart';
 import 'package:flutter/material.dart';
 
@@ -13,14 +14,19 @@ class HeroActionButtons extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ModernButton(
-          text: 'Get Started',
+          text: 'Notices',
           isPrimary: true,
           isDesktop: isDesktop,
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NoticePage()),
+            );
+          },
         ),
         SizedBox(width: isDesktop ? 16 : 0, height: isDesktop ? 0 : 16),
         ModernButton(
-          text: 'Learn More',
+          text: 'Code',
           isPrimary: false,
           isDesktop: isDesktop,
           onTap: () {

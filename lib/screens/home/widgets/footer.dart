@@ -39,11 +39,6 @@ class SimpleFooter extends StatelessWidget {
       'url': 'https://www.linkedin.com/company/codexcrew/',
       'icon': 'https://cdn-icons-png.flaticon.com/512/174/174857.png',
     },
-    'twitter': {
-      'name': 'Twitter',
-      'url': 'https://www.twitter.com/idk',
-      'icon': 'https://cdn-icons-png.flaticon.com/512/733/733579.png',
-    },
   };
 
   static const Map<String, String> copyrightInfo = {
@@ -159,16 +154,14 @@ class SimpleFooter extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        ...contactInfo.entries
-            .map(
-              (entry) => _buildContactItem(
-                entry.value['icon'] as IconData,
-                entry.value['label'] as String,
-                entry.value['action'] as String,
-                isMobile,
-              ),
-            )
-            ,
+        ...contactInfo.entries.map(
+          (entry) => _buildContactItem(
+            entry.value['icon'] as IconData,
+            entry.value['label'] as String,
+            entry.value['action'] as String,
+            isMobile,
+          ),
+        ),
       ],
     );
   }
